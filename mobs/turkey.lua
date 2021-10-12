@@ -117,8 +117,8 @@ animalia.register_mob("turkey", {
 		"farming:seed_wheat"
 	},
 	drops = {
-		{name = "animalia:feather", chance = 1, min = 1, max = 2},
-		{name = "animalia:poultry_raw", chance = 1, min = 2, max = 5}
+		{name = "hades_animalia:feather", chance = 1, min = 1, max = 2},
+		{name = "hades_animalia:poultry_raw", chance = 1, min = 2, max = 5}
 	},
 	-- Functions
 	head_data = {
@@ -143,4 +143,4 @@ animalia.register_mob("turkey", {
 	end,
 })
 
-mob_core.register_spawn_egg("animalia:turkey", "352b22", "2f2721")
+mob_core.register_spawn_egg("hades_animalia:turkey", "352b22", "2f2721")

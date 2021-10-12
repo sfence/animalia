@@ -564,7 +564,7 @@ function animalia.on_activate(self, staticdata, dtime_s)
     if self.lasso_pos then
         self.caught_with_lasso = true
         if minetest.get_item_group(minetest.get_node(self.lasso_pos).name, "fence") > 0 then
-            local object = minetest.add_entity(self.lasso_pos, "animalia:lasso_fence_ent")
+            local object = minetest.add_entity(self.lasso_pos, "hades_animalia:lasso_fence_ent")
             object:get_luaentity().parent = self.object
         end
     end
@@ -581,7 +581,7 @@ end
 local function lasso_effect(self, pos2)
     local pos = mobkit.get_stand_pos(self)
     pos.y = pos.y + (self.height * 0.5)
-    local object = minetest.add_entity(pos2, "animalia:lasso_visual")
+    local object = minetest.add_entity(pos2, "hades_animalia:lasso_visual")
     local ent = object:get_luaentity()
     ent.parent = self.object
     ent.anchor_pos = pos2
@@ -672,7 +672,7 @@ function animalia.on_step(self, dtime, moveresult)
                 v.z = (1.0 + (0.005 * dist)) * (p_target.z - pos.z) / dist
                 self.object:add_velocity(v)
             end
-            if player:get_wielded_item():get_name() ~= "animalia:lasso"
+            if player:get_wielded_item():get_name() ~= "hades_animalia:lasso"
             or vector.distance(pos, ppos) > 20 then
                 self.caught_with_lasso = nil
                 self.point_to = nil
@@ -709,7 +709,7 @@ function animalia.on_step(self, dtime, moveresult)
             for _, object in ipairs(objects) do
                 if object
                 and object:get_luaentity()
-                and object:get_luaentity().name == "animalia:lasso_fence_ent" then
+                and object:get_luaentity().name == "hades_animalia:lasso_fence_ent" then
                     is_lasso_attached = true
                 end
             end
@@ -728,8 +728,8 @@ function animalia.on_step(self, dtime, moveresult)
                 for _, object in ipairs(objects) do
                     if object
                     and object:get_luaentity()
-                    and object:get_luaentity().name == "animalia:lasso_fence_ent" then
-                        minetest.add_item(object:get_pos(), "animalia:lasso")
+                    and object:get_luaentity().name == "hades_animalia:lasso_fence_ent" then
+                        minetest.add_item(object:get_pos(), "hades_animalia:lasso")
                         object:remove()
                     end
                 end

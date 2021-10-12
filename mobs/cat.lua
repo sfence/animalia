@@ -7,13 +7,13 @@ local clamp_bone_rot = animalia.clamp_bone_rot
 local interp = animalia.interp
 
 local follow = {
-	"animalia:poultry_raw"
+	"hades_animalia:poultry_raw"
 }
 
 if minetest.registered_items["ethereal:fish_raw"] then
 	follow = {
 		"ethereal:fish_raw",
-		"animalia:poultry_raw"
+		"hades_animalia:poultry_raw"
 	}
 end
 
@@ -114,7 +114,7 @@ local function cat_logic(self)
 				and trust >= 4 then
 					animalia.hq_follow_player(self, 3, player)
 				end
-			elseif player:get_wielded_item():get_name() == "animalia:cat_toy" then
+			elseif player:get_wielded_item():get_name() == "hades_animalia:cat_toy" then
 				animalia.hq_follow_player(self, 3, player, true)
 				return
 			end
@@ -123,7 +123,7 @@ local function cat_logic(self)
 		if player
 		and prty == 3
 		and not mob_core.follow_holding(self, player)
-		and player:get_wielded_item():get_name() ~= "animalia:cat_toy" then
+		and player:get_wielded_item():get_name() ~= "hades_animalia:cat_toy" then
 			mobkit.clear_queue_high(self)
 		end
 
@@ -222,7 +222,7 @@ animalia.register_mob("cat", {
 	end,
 	on_rightclick = function(self, clicker)
 		local item = clicker:get_wielded_item():get_name()
-		if item == "animalia:net" then return end
+		if item == "hades_animalia:net" then return end
 		if not self.trust[clicker:get_player_name()] then
 			self.trust[clicker:get_player_name()] = 0
 			mobkit.remember(self, "trust", self.trust)
@@ -245,7 +245,7 @@ animalia.register_mob("cat", {
 		mob_core.protect(self, clicker, true)
 		mob_core.nametag(self, clicker, true)
 		if mobkit.get_queue_priority(self) == 3
-		and clicker:get_wielded_item():get_name() == "animalia:cat_toy" then
+		and clicker:get_wielded_item():get_name() == "hades_animalia:cat_toy" then
 			if trust < 10 then
 				self.trust[clicker:get_player_name()] = trust + 1
 				mobkit.remember(self, "trust", self.trust)
@@ -303,4 +303,4 @@ animalia.register_mob("cat", {
 	end
 })
 
-mob_core.register_spawn_egg("animalia:cat", "db9764" ,"cf8d5a")
+mob_core.register_spawn_egg("hades_animalia:cat", "db9764" ,"cf8d5a")

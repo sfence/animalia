@@ -156,7 +156,7 @@ animalia.register_mob("sheep", {
 		}
 	},
 	drops = {
-		{name = "animalia:mutton_raw", chance = 1, min = 1, max = 4}
+		{name = "hades_animalia:mutton_raw", chance = 1, min = 1, max = 4}
 	},
     -- Functions
 	head_data = {
@@ -201,7 +201,7 @@ animalia.register_mob("sheep", {
 		local item = clicker:get_wielded_item()
 		local itemname = item:get_name()
 		local name = clicker:get_player_name()
-		if itemname == "animalia:shears"
+		if itemname == "hades_animalia:shears"
 		and not self.gotten
 		and not self.child then
 			if not minetest.get_modpath("wool") then
@@ -236,7 +236,7 @@ animalia.register_mob("sheep", {
 					self.dye_hex = mobkit.remember(self, "dye_hex", color[3])
 
 					self.drops = {
-						{name = "animalia:mutton_raw", chance = 1, min = 1, max = 4},
+						{name = "hades_animalia:mutton_raw", chance = 1, min = 1, max = 4},
 						{name = "wool:"..self.dye_color, chance = 2, min = 1, max = 2},
 					}
 
@@ -259,16 +259,16 @@ animalia.register_mob("sheep", {
 	end
 })
 
-mob_core.register_spawn_egg("animalia:sheep", "f4e6cf", "e1ca9b")
+mob_core.register_spawn_egg("hades_animalia:sheep", "f4e6cf", "e1ca9b")
 
-minetest.register_craftitem("animalia:mutton_raw", {
+minetest.register_craftitem("hades_animalia:mutton_raw", {
 	description = "Raw Mutton",
 	inventory_image = "animalia_mutton_raw.png",
 	on_use = minetest.item_eat(1),
 	groups = {flammable = 2, meat = 1, food_meat = 1},
 })
 
-minetest.register_craftitem("animalia:mutton_cooked", {
+minetest.register_craftitem("hades_animalia:mutton_cooked", {
 	description = "Cooked Mutton",
 	inventory_image = "animalia_mutton_cooked.png",
 	on_use = minetest.item_eat(6),
@@ -277,6 +277,6 @@ minetest.register_craftitem("animalia:mutton_cooked", {
 
 minetest.register_craft({
 	type  =  "cooking",
-	recipe  = "animalia:mutton_raw",
-	output = "animalia:mutton_cooked",
+	recipe  = "hades_animalia:mutton_raw",
+	output = "hades_animalia:mutton_cooked",
 })

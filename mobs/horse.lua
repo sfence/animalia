@@ -215,7 +215,7 @@ animalia.register_mob("horse", {
 		"farming:wheat",
 	},
 	drops = {
-		{name = "animalia:leather", chance = 2, min = 1, max = 4},
+		{name = "hades_animalia:leather", chance = 2, min = 1, max = 4},
 	},
 	player_rotation = {x = -60, y = 180, z = 0},
 	driver_scale = {x = 0.1, y = 0.1},
@@ -246,8 +246,8 @@ animalia.register_mob("horse", {
 				textures = {texture .. "^animalia_horse_saddle.png"}
 			})
 			self.drops = {
-				{name = "animalia:leather", chance = 2, min = 1, max = 4},
-				{name = "animalia:saddle", chance = 1, min = 1, max = 1}
+				{name = "hades_animalia:leather", chance = 2, min = 1, max = 4},
+				{name = "hades_animalia:saddle", chance = 1, min = 1, max = 1}
 			}
 		end
 	end,
@@ -261,7 +261,7 @@ animalia.register_mob("horse", {
 			if self.saddled
 			and tool:get_name() == "" then
             	mob_core.mount(self, clicker)
-			elseif tool:get_name() == "animalia:saddle" then
+			elseif tool:get_name() == "hades_animalia:saddle" then
 				self.saddled = mobkit.remember(self, "saddled", true)
 				local texture = self.object:get_properties().textures[1]
 				self.object:set_properties({
@@ -284,4 +284,4 @@ animalia.register_mob("horse", {
 	end
 })
 
-mob_core.register_spawn_egg("animalia:horse", "ebdfd8" ,"653818")
+mob_core.register_spawn_egg("hades_animalia:horse", "ebdfd8" ,"653818")

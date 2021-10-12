@@ -7,19 +7,19 @@ local clamp_bone_rot = animalia.clamp_bone_rot
 local interp = animalia.interp
 
 local follow = {
-	"animalia:mutton_raw",
-	"animalia:beef_raw",
-	"animalia:porkchop_raw",
-	"animalia:poultry_raw"
+	"hades_animalia:mutton_raw",
+	"hades_animalia:beef_raw",
+	"hades_animalia:porkchop_raw",
+	"hades_animalia:poultry_raw"
 }
 
 if minetest.registered_items["bonemeal:bone"] then
 	follow = {
 		"bonemeal:bone",
-		"animalia:beef_raw",
-		"animalia:porkchop_raw",
-		"animalia:mutton_raw",
-		"animalia:poultry_raw"
+		"hades_animalia:beef_raw",
+		"hades_animalia:porkchop_raw",
+		"hades_animalia:mutton_raw",
+		"hades_animalia:poultry_raw"
 	}
 end
 
@@ -122,7 +122,7 @@ local function wolf_logic(self)
         end
 		
 		if prty < 2 then
-			local target = mobkit.get_closest_entity(self, "animalia:sheep")
+			local target = mobkit.get_closest_entity(self, "hades_animalia:sheep")
 			if target then
 				animalia.bh_attack(self, 2, target)
 			end
@@ -185,10 +185,10 @@ animalia.register_mob("wolf", {
     defend_owner = true,
 	follow = {
 		"bonemeal:bone",
-		"animalia:beef_raw",
-		"animalia:porkchop_raw",
-		"animalia:mutton_raw",
-		"animalia:poultry_raw"
+		"hades_animalia:beef_raw",
+		"hades_animalia:porkchop_raw",
+		"hades_animalia:mutton_raw",
+		"hades_animalia:poultry_raw"
 	},
     -- Functions
 	head_data = {
@@ -222,4 +222,4 @@ animalia.register_mob("wolf", {
 	end
 })
 
-mob_core.register_spawn_egg("animalia:wolf", "a19678" ,"231b13")
+mob_core.register_spawn_egg("hades_animalia:wolf", "a19678" ,"231b13")

@@ -38,7 +38,7 @@ local function chicken_logic(self)
 		local player = mobkit.get_nearby_player(self)
 
 		mob_core.random_sound(self, 14)
-		mob_core.random_drop(self, 10, 1800, "animalia:chicken_egg")
+		mob_core.random_drop(self, 10, 1800, "hades_animalia:chicken_egg")
 
 		if prty < 4
 		and self.isinliquid then
@@ -134,8 +134,8 @@ animalia.register_mob("chicken", {
 		"farming:seed_wheat"
 	},
 	drops = {
-		{name = "animalia:feather", chance = 1, min = 1, max = 2},
-		{name = "animalia:poultry_raw", chance = 1, min = 1, max = 4}
+		{name = "hades_animalia:feather", chance = 1, min = 1, max = 2},
+		{name = "hades_animalia:poultry_raw", chance = 1, min = 1, max = 4}
 	},
 	-- Functions
 	head_data = {
@@ -159,16 +159,16 @@ animalia.register_mob("chicken", {
 	end,
 })
 
-mob_core.register_spawn_egg("animalia:chicken", "c6c6c6", "d22222")
+mob_core.register_spawn_egg("hades_animalia:chicken", "c6c6c6", "d22222")
 
-minetest.register_craftitem("animalia:poultry_raw", {
+minetest.register_craftitem("hades_animalia:poultry_raw", {
 	description = "Raw Poultry",
 	inventory_image = "animalia_poultry_raw.png",
 	on_use = minetest.item_eat(1),
 	groups = {flammable = 2, meat = 1, food_meat = 1},
 })
 
-minetest.register_craftitem("animalia:poultry_cooked", {
+minetest.register_craftitem("hades_animalia:poultry_cooked", {
 	description = "Cooked Poultry",
 	inventory_image = "animalia_poultry_cooked.png",
 	on_use = minetest.item_eat(6),
@@ -177,11 +177,11 @@ minetest.register_craftitem("animalia:poultry_cooked", {
 
 minetest.register_craft({
 	type  =  "cooking",
-	recipe  = "animalia:poultry_raw",
-	output = "animalia:poultry_cooked",
+	recipe  = "hades_animalia:poultry_raw",
+	output = "hades_animalia:poultry_cooked",
 })
 
-minetest.register_entity("animalia:chicken_egg_sprite", {
+minetest.register_entity("hades_animalia:chicken_egg_sprite", {
     hp_max = 1,
     physical = true,
     collisionbox = {0, 0, 0, 0, 0, 0},
@@ -216,7 +216,7 @@ minetest.register_entity("animalia:chicken_egg_sprite", {
 				texture = "animalia_egg_fragment.png",
 			})
 			if random(1, 3) < 2 then
-				mob_core.spawn_child(pos, "animalia:chicken")
+				mob_core.spawn_child(pos, "hades_animalia:chicken")
 				self.object:remove()
 			else
 				self.object:remove()
@@ -241,7 +241,7 @@ local mobs_shoot_egg = function (item, player, pointed_thing)
 		x = pos.x,
 		y = pos.y +1.5,
 		z = pos.z
-	}, "animalia:chicken_egg_sprite")
+	}, "hades_animalia:chicken_egg_sprite")
 
 	local ent = obj:get_luaentity()
 	local dir = player:get_look_dir()
@@ -270,14 +270,14 @@ local mobs_shoot_egg = function (item, player, pointed_thing)
 	return item
 end
 
-minetest.register_craftitem("animalia:chicken_egg", {
+minetest.register_craftitem("hades_animalia:chicken_egg", {
 	description = "Chicken Egg",
 	inventory_image = "animalia_egg.png",
 	on_use = mobs_shoot_egg,
 	groups = {food_egg = 1, flammable = 2},
 })
 
-minetest.register_craftitem("animalia:chicken_egg_fried", {
+minetest.register_craftitem("hades_animalia:chicken_egg_fried", {
 	description = "Fried Chicken Egg",
 	inventory_image = "animalia_egg_fried.png",
 	on_use = minetest.item_eat(4),
@@ -286,11 +286,11 @@ minetest.register_craftitem("animalia:chicken_egg_fried", {
 
 minetest.register_craft({
 	type  =  "cooking",
-	recipe  = "animalia:chicken_egg",
-	output = "animalia:chicken_egg_fried",
+	recipe  = "hades_animalia:chicken_egg",
+	output = "hades_animalia:chicken_egg_fried",
 })
 
-minetest.register_craftitem("animalia:feather", {
+minetest.register_craftitem("hades_animalia:feather", {
 	description = "Feather",
 	inventory_image = "animalia_feather.png",
 	groups = {flammable = 2, feather = 1},

@@ -73,7 +73,7 @@ end)
 -- Chicken --
 
 mob_core.register_spawn({
-	name = "animalia:chicken",
+	name = "hades_animalia:chicken",
 	min_light = 0,
 	max_light = 15,
 	min_height = -31000,
@@ -100,7 +100,7 @@ minetest.register_on_mods_loaded(function()
 end)
 
 mob_core.register_spawn({
-	name = "animalia:cat",
+	name = "hades_animalia:cat",
 	nodes = house_nodes,
 	min_light = 0,
 	max_light = 15,
@@ -114,7 +114,7 @@ mob_core.register_spawn({
 -- Cow --
 
 mob_core.register_spawn({
-	name = "animalia:cow",
+	name = "hades_animalia:cow",
 	min_light = 0,
 	max_light = 15,
 	min_height = -31000,
@@ -128,7 +128,7 @@ mob_core.register_spawn({
 -- Horse --
 
 mob_core.register_spawn({
-	name = "animalia:horse",
+	name = "hades_animalia:horse",
 	min_light = 0,
 	max_light = 15,
 	min_height = -31000,
@@ -142,7 +142,7 @@ mob_core.register_spawn({
 -- Pig --
 
 mob_core.register_spawn({
-	name = "animalia:pig",
+	name = "hades_animalia:pig",
 	nodes = {"default:dirt_with_grass"},
 	min_light = 0,
 	max_light = 15,
@@ -157,7 +157,7 @@ mob_core.register_spawn({
 -- Sheep --
 
 mob_core.register_spawn({
-	name = "animalia:sheep",
+	name = "hades_animalia:sheep",
 	min_light = 0,
 	max_light = 15,
 	min_height = -31000,
@@ -173,7 +173,7 @@ mob_core.register_spawn({
 -- Turkey --
 
 mob_core.register_spawn({
-	name = "animalia:turkey",
+	name = "hades_animalia:turkey",
 	min_light = 0,
 	max_light = 15,
 	min_height = -31000,
@@ -189,7 +189,7 @@ mob_core.register_spawn({
 -- Wolf --
 
 mob_core.register_spawn({
-	name = "animalia:wolf",
+	name = "hades_animalia:wolf",
 	min_light = 0,
 	max_light = 15,
 	min_height = -31000,

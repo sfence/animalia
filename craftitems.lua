@@ -7,7 +7,7 @@
 -- Animal Net -- Used to capture and store animals
 ----------------
 
-minetest.register_craftitem("animalia:net", {
+minetest.register_craftitem("hades_animalia:net", {
     description = "Animal Net",
     inventory_image = "animalia_net.png",
     stack_max = 1,
@@ -15,7 +15,7 @@ minetest.register_craftitem("animalia:net", {
         if pointed_thing.type == "object" then
             if pointed_thing.ref:is_player() then return end
             local ent = pointed_thing.ref:get_luaentity()
-            if not ent.name:match("^animalia:") or not ent.catch_with_net then
+            if not ent.name:match("^hades_animalia:") or not ent.catch_with_net then
                 return
             end
             local ent_name = mob_core.get_name_proper(ent.name)
@@ -23,9 +23,9 @@ minetest.register_craftitem("animalia:net", {
             local meta = itemstack:get_meta()
             if not meta:get_string("mob") or meta:get_string("mob") == "" then
                 if placer:get_wielded_item():get_count() > 1 then
-                    if placer:get_inventory():room_for_item("main", {name = "animalia:net"}) then
+                    if placer:get_inventory():room_for_item("main", {name = "hades_animalia:net"}) then
                         itemstack:take_item(1)
-                        placer:get_inventory():add_item("main", "animalia:net")
+                        placer:get_inventory():add_item("main", "hades_animalia:net")
                         return itemstack
                     else
                         return
@@ -34,7 +34,7 @@ minetest.register_craftitem("animalia:net", {
                 meta:set_string("mob", ent.name)
                 meta:set_string("staticdata", ent:get_staticdata())
                 local desc = "Animal Net \n" .. minetest.colorize("#a9a9a9", ent_name) .. "\n" .. minetest.colorize("#a9a9a9", ent_gender)
-                if ent.name == "animalia:cat"
+                if ent.name == "hades_animalia:cat"
                 and ent.trust
                 and ent.trust[placer:get_player_name()] then
                     desc = desc .. "\n" .. minetest.colorize("#a9a9a9", ent.trust[placer:get_player_name()])
@@ -81,7 +81,7 @@ minetest.register_craftitem("animalia:net", {
 })
 
 minetest.register_craft({
-    output = "animalia:net",
+    output = "hades_animalia:net",
     recipe = {
         {"farming:string", "", "farming:string"},
         {"farming:string", "", "farming:string"},
@@ -96,7 +96,7 @@ minetest.register_craft({
 local function is_lasso_in_use(player)
     for _, ent in pairs(minetest.luaentities) do
         if ent.name
-        and ent.name:match("^animalia:") then
+        and ent.name:match("^hades_animalia:") then
             if ent.lasso_player
             and ent.lasso_player == player then
                 return true
@@ -107,7 +107,7 @@ local function is_lasso_in_use(player)
 end
 
 
-minetest.register_entity("animalia:lasso_visual", {
+minetest.register_entity("hades_animalia:lasso_visual", {
     hp_max = 1,
     armor_groups = {immortal = 1},
     physical = false,
@@ -140,7 +140,7 @@ minetest.register_entity("animalia:lasso_visual", {
     end
 })
 
-minetest.register_entity("animalia:lasso_fence_ent", {
+minetest.register_entity("hades_animalia:lasso_fence_ent", {
     hp_max = 1,
     physical = false,
     collisionbox = {-0.25,-0.25,-0.25, 0.25,0.25,0.25},
@@ -174,7 +174,7 @@ minetest.register_entity("animalia:lasso_fence_ent", {
                 ent.lasso_visual:remove()
                 ent.lasso_visual = nil
             end
-            minetest.add_item(self.object:get_pos(), "animalia:lasso")
+            minetest.add_item(self.object:get_pos(), "hades_animalia:lasso")
             self.object:remove()
             return
         end
@@ -201,7 +201,7 @@ minetest.register_entity("animalia:lasso_fence_ent", {
             local pos = vector.add(self.object:get_pos(), dirs[i])
             local name = minetest.get_node(pos).name
             if not minetest.registered_nodes[name].walkable then
-                minetest.add_item(pos, "animalia:lasso")
+                minetest.add_item(pos, "hades_animalia:lasso")
                 break
             end
         end
@@ -229,7 +229,7 @@ minetest.register_entity("animalia:lasso_fence_ent", {
             local pos = vector.add(self.object:get_pos(), dirs[i])
             local name = minetest.get_node(pos).name
             if not minetest.registered_nodes[name].walkable then
-                minetest.add_item(pos, "animalia:lasso")
+                minetest.add_item(pos, "hades_animalia:lasso")
                 break
             end
         end
@@ -237,14 +237,14 @@ minetest.register_entity("animalia:lasso_fence_ent", {
     end
 })
 
-minetest.register_craftitem("animalia:lasso", {
+minetest.register_craftitem("hades_animalia:lasso", {
     description = "Lasso",
     inventory_image = "animalia_lasso.png",
     on_secondary_use = function(itemstack, placer, pointed_thing)
         if pointed_thing.type == "object" then
             if pointed_thing.ref:is_player() then return end
             local ent = pointed_thing.ref:get_luaentity()
-            if not ent.name:match("^animalia:") or not ent.catch_with_net then
+            if not ent.name:match("^hades_animalia:") or not ent.catch_with_net then
                 return
             end
             if not ent.caught_with_lasso
@@ -269,7 +269,7 @@ minetest.register_craftitem("animalia:lasso", {
                     and obj:get_luaentity().lasso_player == placer then
                         obj:get_luaentity().lasso_pos = pos
                         obj:get_luaentity().lasso_player = nil
-                        local object = minetest.add_entity(pos, "animalia:lasso_fence_ent")
+                        local object = minetest.add_entity(pos, "hades_animalia:lasso_fence_ent")
                         object:get_luaentity().parent = obj
                         itemstack:take_item(1)
                         break
@@ -282,10 +282,10 @@ minetest.register_craftitem("animalia:lasso", {
 })
 
 minetest.register_craft({
-    output = "animalia:lasso",
+    output = "hades_animalia:lasso",
     recipe = {
         {"", "farming:string", "farming:string"},
-        {"", "animalia:leather", "farming:string"},
+        {"", "hades_animalia:leather", "farming:string"},
         {"farming:string", "", ""}
     }
 })
@@ -294,14 +294,14 @@ minetest.register_craft({
 -- Cat Toy -- Used to quickly increase trust with Cats
 -------------
 
-minetest.register_craftitem("animalia:cat_toy", {
+minetest.register_craftitem("hades_animalia:cat_toy", {
     description = "Cat Toy",
     inventory_image = "animalia_cat_toy.png",
     wield_image = "animalia_cat_toy.png^[transformFYR90",
 })
 
 minetest.register_craft({
-    output = "animalia:cat_toy",
+    output = "hades_animalia:cat_toy",
     recipe = {
         {"", "", "farming:string"},
         {"", "group:stick", "farming:string"},
@@ -313,16 +313,16 @@ minetest.register_craft({
 -- Saddle -- Can be attached to a tamed Horse to make it ridable
 ------------
 
-minetest.register_craftitem("animalia:saddle", {
+minetest.register_craftitem("hades_animalia:saddle", {
     description = "Saddle",
     inventory_image = "animalia_saddle.png",
 })
 
 minetest.register_craft({
-    output = "animalia:saddle",
+    output = "hades_animalia:saddle",
     recipe = {
-        {"animalia:leather", "animalia:leather", "animalia:leather"},
-        {"animalia:leather", "default:steel_ingot", "animalia:leather"},
+        {"hades_animalia:leather", "hades_animalia:leather", "hades_animalia:leather"},
+        {"hades_animalia:leather", "default:steel_ingot", "hades_animalia:leather"},
         {"farming:string", "", "farming:string"}
     }
 })
@@ -331,16 +331,16 @@ minetest.register_craft({
 -- Shears -- Used to shear Sheep
 ------------
 
-minetest.register_tool("animalia:shears", {
+minetest.register_tool("hades_animalia:shears", {
 	description = "Shears",
 	inventory_image = "animalia_shears.png",
 	groups = {flammable = 2}
 })
 
 minetest.register_craft({
-	output = "animalia:shears",
+	output = "hades_animalia:shears",
 	recipe = {
 		{"", "default:steel_ingot", ""},
-		{"", "animalia:leather", "default:steel_ingot"}
+		{"", "hades_animalia:leather", "default:steel_ingot"}
 	}
 })

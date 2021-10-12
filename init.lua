@@ -37,7 +37,7 @@ if fancy_step then
 end
 
 function animalia.register_mob(name, def)
-	minetest.register_entity("animalia:".. name, {
+	minetest.register_entity("hades_animalia:".. name, {
 		physical = true,
 		collide_with_objects = true,
 		visual = "mesh",
@@ -103,10 +103,10 @@ function animalia.register_mob(name, def)
 		on_rightclick = def.on_rightclick,
 		on_punch = def.on_punch,
 	})
-	table.insert(animalia.mobs, "animalia:" .. name)
+	table.insert(animalia.mobs, "hades_animalia:" .. name)
 end
 
-local path = minetest.get_modpath("animalia")
+local path = minetest.get_modpath(minetest.get_current_modname())
 
 local spawn_mobs = minetest.settings:get_bool("spawn_mobs") or true
 
@@ -128,22 +128,22 @@ dofile(path.."/api/legacy_convert.lua")
 local convert_redo_items = minetest.settings:get_bool("convert_redo_items") or false
 
 if convert_redo_items then
-	minetest.register_alias_force("mobs:lasso","animalia:lasso")
-	minetest.register_alias_force("mobs:saddle","animalia:saddle")
-	minetest.register_alias_force("mobs:shears","animalia:shears")
-	minetest.register_alias_force("mobs_animal:chicken_raw","animalia:poultry_raw")
-	minetest.register_alias_force("mobs_animal:chicken_feather","animalia:feather")
-	minetest.register_alias_force("mobs:meat_raw" ,"animalia:beef_raw")
-	minetest.register_alias_force("mobs:meat","animalia:beef_cooked")
-	minetest.register_alias_force("mobs_animal:mutton_raw","animalia:mutton_raw")
-	minetest.register_alias_force("mobs_animal:mutton_cooked","animalia:mutton_cooked")
-	minetest.register_alias_force("mobs:leather" ,"animalia:leather")
-	minetest.register_alias_force("mobs_animal:egg","animalia:chicken_egg")
-	minetest.register_alias_force("mobs_animal:chicken_egg_fried" ,"animalia:chicken_egg_fried")
-	minetest.register_alias_force("mobs_animal:milk_bucket","animalia:bucket_milk")
-	minetest.register_alias_force("mobs_animal:chicken_cooked" ,"animalia:poultry_cooked")
-	minetest.register_alias_force("mobs_animal:pork_raw" ,"animalia:porkchop_raw")
-	minetest.register_alias_force("mobs_animal:pork_cooked","animalia:porkchop_cooked")
+	minetest.register_alias_force("mobs:lasso","hades_animalia:lasso")
+	minetest.register_alias_force("mobs:saddle","hades_animalia:saddle")
+	minetest.register_alias_force("mobs:shears","hades_animalia:shears")
+	minetest.register_alias_force("mobs_animal:chicken_raw","hades_animalia:poultry_raw")
+	minetest.register_alias_force("mobs_animal:chicken_feather","hades_animalia:feather")
+	minetest.register_alias_force("mobs:meat_raw" ,"hades_animalia:beef_raw")
+	minetest.register_alias_force("mobs:meat","hades_animalia:beef_cooked")
+	minetest.register_alias_force("mobs_animal:mutton_raw","hades_animalia:mutton_raw")
+	minetest.register_alias_force("mobs_animal:mutton_cooked","hades_animalia:mutton_cooked")
+	minetest.register_alias_force("mobs:leather" ,"hades_animalia:leather")
+	minetest.register_alias_force("mobs_animal:egg","hades_animalia:chicken_egg")
+	minetest.register_alias_force("mobs_animal:chicken_egg_fried" ,"hades_animalia:chicken_egg_fried")
+	minetest.register_alias_force("mobs_animal:milk_bucket","hades_animalia:bucket_milk")
+	minetest.register_alias_force("mobs_animal:chicken_cooked" ,"hades_animalia:poultry_cooked")
+	minetest.register_alias_force("mobs_animal:pork_raw" ,"hades_animalia:porkchop_raw")
+	minetest.register_alias_force("mobs_animal:pork_cooked","hades_animalia:porkchop_cooked")
 end
 
 minetest.log("action", "[MOD] Animalia [0.2] loaded")

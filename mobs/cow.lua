@@ -154,8 +154,8 @@ animalia.register_mob("cow", {
 		}
 	},
 	drops = {
-		{name = "animalia:leather", chance = 2, min = 1, max = 2},
-		{name = "animalia:beef_raw", chance = 1, min = 1, max = 4}
+		{name = "hades_animalia:leather", chance = 2, min = 1, max = 2},
+		{name = "hades_animalia:beef_raw", chance = 1, min = 1, max = 4}
 	},
     -- Functions
 	head_data = {
@@ -192,12 +192,12 @@ animalia.register_mob("cow", {
 			tool:take_item()
 			clicker:set_wielded_item(tool)
 
-			if inv:room_for_item("main", {name = "animalia:bucket_milk"}) then
-				clicker:get_inventory():add_item("main", "animalia:bucket_milk")
+			if inv:room_for_item("main", {name = "hades_animalia:bucket_milk"}) then
+				clicker:get_inventory():add_item("main", "hades_animalia:bucket_milk")
 			else
 				local pos = self.object:get_pos()
 				pos.y = pos.y + 0.5
-				minetest.add_item(pos, {name = "animalia:bucket_milk"})
+				minetest.add_item(pos, {name = "hades_animalia:bucket_milk"})
 			end
 
 			self.gotten = mobkit.remember(self, "gotten", true)
@@ -210,12 +210,12 @@ animalia.register_mob("cow", {
 	end
 })
 
-minetest.register_craftitem("animalia:leather", {
+minetest.register_craftitem("hades_animalia:leather", {
     description = "Leather",
     inventory_image = "animalia_leather.png"
 })
 
-minetest.register_craftitem("animalia:bucket_milk", {
+minetest.register_craftitem("hades_animalia:bucket_milk", {
 	description = "Bucket of Milk",
 	inventory_image = "animalia_milk_bucket.png",
 	stack_max = 1,
@@ -223,14 +223,14 @@ minetest.register_craftitem("animalia:bucket_milk", {
 	groups = {food_milk = 1, flammable = 3},
 })
 
-minetest.register_craftitem("animalia:beef_raw", {
+minetest.register_craftitem("hades_animalia:beef_raw", {
 	description = "Raw Beef",
 	inventory_image = "animalia_beef_raw.png",
 	on_use = minetest.item_eat(1),
 	groups = {flammable = 2, meat = 1, food_meat = 1},
 })
 
-minetest.register_craftitem("animalia:beef_cooked", {
+minetest.register_craftitem("hades_animalia:beef_cooked", {
 	description = "Steak",
 	inventory_image = "animalia_beef_cooked.png",
 	on_use = minetest.item_eat(8),
@@ -239,9 +239,9 @@ minetest.register_craftitem("animalia:beef_cooked", {
 
 minetest.register_craft({
 	type  =  "cooking",
-	recipe  = "animalia:beef_raw",
-	output = "animalia:beef_cooked",
+	recipe  = "hades_animalia:beef_raw",
+	output = "hades_animalia:beef_cooked",
 })
 
 
-mob_core.register_spawn_egg("animalia:cow", "cac3a1" ,"464438")
+mob_core.register_spawn_egg("hades_animalia:cow", "cac3a1" ,"464438")

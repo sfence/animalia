@@ -123,7 +123,7 @@ animalia.register_mob("pig", {
 		"farming:carrot"
 	},
 	drops = {
-		{name = "animalia:porkchop_raw", chance = 1, min = 1, max = 4}
+		{name = "hades_animalia:porkchop_raw", chance = 1, min = 1, max = 4}
 	},
     -- Functions
     logic = pig_logic,
@@ -141,14 +141,14 @@ animalia.register_mob("pig", {
 	end
 })
 
-minetest.register_craftitem("animalia:porkchop_raw", {
+minetest.register_craftitem("hades_animalia:porkchop_raw", {
 	description = "Raw Porkchop",
 	inventory_image = "animalia_porkchop_raw.png",
 	on_use = minetest.item_eat(1),
 	groups = {flammable = 2, meat = 1, food_meat = 1},
 })
 
-minetest.register_craftitem("animalia:porkchop_cooked", {
+minetest.register_craftitem("hades_animalia:porkchop_cooked", {
 	description = "Cooked Porkchop",
 	inventory_image = "animalia_porkchop_cooked.png",
 	on_use = minetest.item_eat(7),
@@ -157,8 +157,8 @@ minetest.register_craftitem("animalia:porkchop_cooked", {
 
 minetest.register_craft({
 	type  =  "cooking",
-	recipe  = "animalia:porkchop_raw",
-	output = "animalia:porkchop_cooked",
+	recipe  = "hades_animalia:porkchop_raw",
+	output = "hades_animalia:porkchop_cooked",
 })
 
-mob_core.register_spawn_egg("animalia:pig", "e0b1a7" ,"cc9485")
+mob_core.register_spawn_egg("hades_animalia:pig", "e0b1a7" ,"cc9485")
