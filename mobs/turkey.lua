@@ -113,8 +113,8 @@ animalia.register_mob("turkey", {
 	-- Behavior
 	defend_owner = false,
 	follow = {
-		"farming:seed_cotton",
-		"farming:seed_wheat"
+		"hades_farming:seed_cotton",
+		"hades_farming:seed_wheat"
 	},
 	drops = {
 		{name = "hades_animalia:feather", chance = 1, min = 1, max = 2},

@@ -141,17 +141,17 @@ animalia.register_mob("cow", {
     -- Behavior
     defend_owner = false,
 	follow = {
-		"farming:wheat",
+		"hades_farming:wheat",
 	},
 	consumable_nodes = {
 		{
-			name = "default:dirt_with_grass",
-			replacement = "default:dirt"
+			name = "hades_core:dirt_with_grass",
+			replacement = "hades_core:dirt_with_grass_l3"
 		},
 		{
-			name = "default:dry_dirt_with_dry_grass",
-			replacement = "default:dry_dirt"
-		}
+			name = "hades_core:dirt_with_grass_l3",
+			replacement = "hades_core:dirt_with_grass_l1"
+		},
 	},
 	drops = {
 		{name = "hades_animalia:leather", chance = 2, min = 1, max = 2},

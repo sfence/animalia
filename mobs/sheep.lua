@@ -147,13 +147,17 @@ animalia.register_mob("sheep", {
 	},
 	consumable_nodes = {
 		{
-			name = "default:dirt_with_grass",
-			replacement = "default:dirt"
+			name = "hades_core:dirt_with_grass",
+			replacement = "hades_core:dirt_with_grass_l3"
 		},
 		{
-			name = "default:dry_dirt_with_dry_grass",
-			replacement = "default:dry_dirt"
-		}
+			name = "hades_core:dirt_with_grass_l3",
+			replacement = "hades_core:dirt_with_grass_l2"
+		},
+		{
+			name = "hades_core:dirt_with_grass_l2",
+			replacement = "hades_core:dirt_with_grass_l1"
+		},
 	},
 	drops = {
 		{name = "hades_animalia:mutton_raw", chance = 1, min = 1, max = 4}

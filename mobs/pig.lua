@@ -120,7 +120,25 @@ animalia.register_mob("pig", {
     -- Behavior
     defend_owner = false,
 	follow = {
-		"farming:carrot"
+		"hades_extrafarming:carrot"
+	},
+	consumable_nodes = {
+		{
+			name = "hades_core:dirt_with_grass",
+			replacement = "hades_core:dirt_with_grass_l3"
+		},
+		{
+			name = "hades_core:dirt_with_grass_l3",
+			replacement = "hades_core:dirt_with_grass_l2"
+		},
+		{
+			name = "hades_core:dirt_with_grass_l2",
+			replacement = "hades_core:dirt_with_grass_l1"
+		},
+		{
+			name = "hades_core:dirt_with_grass_l1",
+			replacement = "hades_core:dirt"
+		},
 	},
 	drops = {
 		{name = "hades_animalia:porkchop_raw", chance = 1, min = 1, max = 4}
