@@ -280,8 +280,8 @@ minetest.register_craftitem("hades_animalia:chicken_egg", {
 minetest.register_craftitem("hades_animalia:chicken_egg_fried", {
 	description = "Fried Chicken Egg",
 	inventory_image = "animalia_egg_fried.png",
-	on_use = minetest.item_eat(4),
-	groups = {food_egg = 1, flammable = 2},
+	on_use = minetest.item_eat(2),
+	groups = {food_egg = 1, flammable = 2, food = 2, eatable = 2},
 })
 
 minetest.register_craft({
