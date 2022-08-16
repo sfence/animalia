@@ -112,7 +112,7 @@ local spawn_mobs = minetest.settings:get_bool("spawn_mobs") or true
 
 dofile(path.."/api/api.lua")
 if spawn_mobs then
-	dofile(path.."/api/spawn.lua")
+	--dofile(path.."/api/spawn.lua")
 end
 dofile(path.."/craftitems.lua")
 dofile(path.."/mobs/cat.lua")
