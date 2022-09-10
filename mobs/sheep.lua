@@ -2,6 +2,26 @@
 -- Sheep --
 -----------
 
+local random = math.random
+
+local follows = {}
+
+minetest.register_on_mods_loaded(function()
+    for name in pairs(minetest.registered_items) do
+        if (name:match(":wheat")
+		or minetest.get_item_group(name, "food_wheat") > 0)
+		and not name:find("seed") then
+			table.insert(follows, name)
+        end
+    end
+end)
+
+local wool_block = "wool:white"
+
+if not minetest.get_modpath("wool") then
+	wool_block = nil
+end
+
 local creative = minetest.settings:get_bool("creative_mode")
 
 local palette  = {
@@ -22,108 +42,39 @@ local palette  = {
 	{"yellow",     "Yellow",     "#e3ff0070"},
 }
 
-local clamp_bone_rot = animalia.clamp_bone_rot
-
-local interp = animalia.interp
-
-local min = math.min
-local abs = math.abs
-local random = math.random
-
-local function sheep_logic(self)
-
-	if self.hp <= 0 then
-		mob_core.on_die(self)
-		return
-	end
-
-	if self.status ~= "following" then
-		if self.attention_span > 1 then
-			self.attention_span = self.attention_span - self.dtime
-			mobkit.remember(self, "attention_span", self.attention_span)
-		end
-	else
-		self.attention_span = self.attention_span + self.dtime
-		mobkit.remember(self, "attention_span", self.attention_span)
-	end
-
-	animalia.head_tracking(self, 0.5, 0.5)
-
-	if mobkit.timer(self, 3) then 
-
-		local pos = mobkit.get_stand_pos(self)
-		local prty = mobkit.get_queue_priority(self)
-		local player = mobkit.get_nearby_player(self)
-
-		mob_core.random_sound(self, 14)
-		mob_core.growth(self)
-
-		if prty < 5
-		and self.isinliquid then
-			animalia.hq_go_to_land(self, 5)
-		end
-
-		if prty < 4
-        and self.breeding then
-            animalia.hq_breed(self, 4)
-		end
-
-		if prty < 3
-		and self.gotten
-		and math.random(1, 16) == 1 then
-			animalia.hq_eat(self, 3)
-		end
-
-		if prty == 2
-		and not self.lasso_player
-		and (not player
-		or not mob_core.follow_holding(self, player)) then
-			mobkit.clear_queue_high(self)
-		end
-
-        if prty < 2 then
-			if self.caught_with_lasso
-			and self.lasso_player then
-				animalia.hq_follow_player(self, 2, self.lasso_player, true)
-			elseif player then
-	        	if self.attention_span < 5 then
-				    if mob_core.follow_holding(self, player) then
-            	        animalia.hq_follow_player(self, 2, player)
-            	        self.attention_span = self.attention_span + 3
-            	    end
-            	end
-			end
-        end
-
-		if mobkit.is_queue_empty_high(self) then
-			animalia.hq_wander_group(self, 0, 12)
-		end
-	end
-end
-
-animalia.register_mob("sheep", {
+creatura.register_mob("hades_animalia:sheep", {
     -- Stats
-    health = 20,
-    fleshy = 100,
-    view_range = 32,
-    lung_capacity = 10,
-    -- Visual
-	collisionbox = {-0.4, 0, -0.4, 0.4, 0.8, 0.4},
+    max_health = 15,
+    armor_groups = {fleshy = 125},
+    damage = 0,
+    speed = 3,
+	tracking_range = 16,
+    despawn_after = 1500,
+	-- Entity Physics
+	stepheight = 1.1,
+    -- Visuals
+    mesh = "animalia_sheep.b3d",
+	hitbox = {
+		width = 0.4,
+		height = 0.8
+	},
 	visual_size = {x = 10, y = 10},
-	mesh = "animalia_sheep.b3d",
-	textures = {"animalia_sheep.png^animalia_sheep_wool.png"},
-	child_textures = {"animalia_sheep.png"},
+	textures = {
+		"animalia_sheep.png^animalia_sheep_wool.png"
+	},
+	child_textures = {
+		"animalia_sheep.png"
+	},
 	animations = {
 		stand = {range = {x = 1, y = 60}, speed = 10, frame_blend = 0.3, loop = true},
 		walk = {range = {x = 70, y = 110}, speed = 40, frame_blend = 0.3, loop = true},
 		run = {range = {x = 70, y = 110}, speed = 50, frame_blend = 0.3, loop = true},
 	},
-    -- Physics
-    speed = 4,
-    max_fall = 3,
-    -- Attributes
-    sounds = {
-        alter_child_pitch = true,
+    -- Misc
+	step_delay = 0.25,
+	catch_with_net = true,
+	catch_with_lasso = true,
+	sounds = {
         random = {
             name = "animalia_sheep_idle",
             gain = 1.0,
@@ -140,104 +91,162 @@ animalia.register_mob("sheep", {
             distance = 8
         }
     },
-    -- Behavior
-    defend_owner = false,
-	follow = {
-		"farming:wheat",
-	},
+    drops = {
+        {name = "hades_animalia:mutton_raw", min = 1, max = 3, chance = 1},
+		{name = wool_block, min = 1, max = 3, chance = 2}
+    },
+    follow = follows,
 	consumable_nodes = {
-		{
-			name = "hades_core:dirt_with_grass",
-			replacement = "hades_core:dirt_with_grass_l3"
-		},
-		{
-			name = "hades_core:dirt_with_grass_l3",
-			replacement = "hades_core:dirt_with_grass_l2"
-		},
-		{
-			name = "hades_core:dirt_with_grass_l2",
-			replacement = "hades_core:dirt_with_grass_l1"
-		},
+		["default:dirt_with_grass"] = "default:dirt",
+		["default:dry_dirt_with_dry_grass"] = "default:dry_dirt"
 	},
-	drops = {
-		{name = "hades_animalia:mutton_raw", chance = 1, min = 1, max = 4}
-	},
-    -- Functions
 	head_data = {
 		offset = {x = 0, y = 0.41, z = 0},
 		pitch_correction = -45,
 		pivot_h = 0.75,
 		pivot_v = 0.85
 	},
-    logic = sheep_logic,
-    get_staticdata = mobkit.statfunc,
-	on_step = function(self, dtime, moveresult)
-		animalia.on_step(self, dtime, moveresult)
-		if mobkit.is_alive(self) then
-			if self.object:get_properties().textures[1] == "animalia_sheep.png"
-			and not self.gotten then
-				self.object:set_properties({
-					textures = {"animalia_sheep.png^animalia_sheep_wool.png"},
-				})
+    -- Function
+	utility_stack = {
+		{
+			utility = "hades_animalia:wander_group",
+			step_delay = 0.25,
+			get_score = function(self)
+				return 0.1, {self}
 			end
-		end
-	end,
-	on_activate = function(self, staticdata, dtime_s)
-		animalia.on_activate(self, staticdata, dtime_s)
-		self.dye_color = mobkit.recall(self, "dye_color") or "white"
-		self.dye_hex = mobkit.recall(self, "dye_hex") or ""
+		},
+		{
+			utility = "hades_animalia:eat_turf",
+			step_delay = 0.25,
+			get_score = function(self)
+				if random(64) < 2 then
+					return 0.2, {self}
+				end
+				return 0
+			end
+		},
+		{
+			utility = "hades_animalia:swim_to_land",
+			step_delay = 0.25,
+			get_score = function(self)
+				if self.in_liquid then
+					return 0.3, {self}
+				end
+				return 0
+			end
+		},
+		{
+			utility = "hades_animalia:follow_player",
+			get_score = function(self)
+				if self.lasso_origin
+				and type(self.lasso_origin) == "userdata" then
+					return 0.4, {self, self.lasso_origin, true}
+				end
+				local player = creatura.get_nearby_player(self)
+				if player
+				and self:follow_wielded_item(player) then
+					return 0.4, {self, player}
+				end
+				return 0
+			end
+		},
+		{
+			utility = "hades_animalia:breed",
+			step_delay = 0.25,
+			get_score = function(self)
+				if self.breeding
+				and animalia.get_nearby_mate(self, self.name) then
+					return 0.5, {self}
+				end
+				return 0
+			end
+		},
+		{
+			utility = "hades_animalia:flee_from_target",
+			get_score = function(self)
+				local puncher = self._target
+				if puncher
+				and puncher:get_pos() then
+					return 0.6, {self, puncher}
+				end
+				self._target = nil
+				return 0
+			end
+		}
+	},
+    activate_func = function(self)
+        self.collected = self:recall("collected") or false
+		self.dye_color = self:recall("dye_color") or "white"
+		self.dye_hex = self:recall("dye_hex") or ""
 		if self.dye_color ~= "white"
-		and not self.gotten then
+		and not self.collected then
 			self.object:set_properties({
 				textures = {"animalia_sheep.png^(animalia_sheep_wool.png^[colorize:" .. self.dye_hex .. ")"},
 			})
 		end
-		if self.gotten then
+		if self.collected then
 			self.object:set_properties({
 				textures = {"animalia_sheep.png"},
 			})
 		end
-	end,
+        self.attention_span = 8
+        self._path = {}
+		animalia.initialize_api(self)
+		animalia.initialize_lasso(self)
+    end,
+    step_func = function(self)
+		animalia.step_timers(self)
+		animalia.head_tracking(self, 0.75, 0.75)
+		animalia.do_growth(self, 60)
+		animalia.update_lasso_effects(self)
+    end,
+    death_func = function(self)
+		if self:get_utility() ~= "hades_animalia:die" then
+			self:initiate_utility("hades_animalia:die", self)
+		end
+    end,
 	on_rightclick = function(self, clicker)
-		if animalia.feed_tame(self, clicker, 1, false, true) then return end
-		mob_core.protect(self, clicker, true)
-		mob_core.nametag(self, clicker, true)
-		local item = clicker:get_wielded_item()
-		local itemname = item:get_name()
-		local name = clicker:get_player_name()
-		if itemname == "hades_animalia:shears"
-		and not self.gotten
-		and not self.child then
+		if animalia.feed(self, clicker, false, true) then
+			return
+		end
+		if animalia.set_nametag(self, clicker) then
+			return
+		end
+		local tool = clicker:get_wielded_item()
+		local tool_name = tool:get_name()
+		if tool_name == "hades_animalia:shears"
+		and not self.collected
+		and self.growth_scale > 0.9 then
 			if not minetest.get_modpath("wool") then
 				return
 			end
 
-			local obj = minetest.add_item(
+			minetest.add_item(
 				self.object:get_pos(),
 				ItemStack( "wool:" .. self.dye_color .. " " .. math.random(1, 3) )
 			)
 
-			self.gotten = mobkit.remember(self, "gotten", true)
-			self.dye_color = mobkit.remember(self, "dye_color", "white")
-			self.dye_hex = mobkit.remember(self, "dye_hex",  "#abababc000")
+			self.collected = self:memorize("collected", true)
+			self.dye_color = self:memorize("dye_color", "white")
+			self.dye_hex = self:memorize("dye_hex",  "#abababc000")
 
-			item:add_wear(650) -- 100 uses
+			tool:add_wear(650) -- 100 uses
 
-			clicker:set_wielded_item(item)
+			clicker:set_wielded_item(tool)
 
 			self.object:set_properties({
 				textures = {"animalia_sheep.png"},
 			})
 		end
 		for _, color in ipairs(palette) do
-			if itemname:find("dye:")
-			and not self.gotten
-			and not self.child then
-				local dye = string.split(itemname, ":")[2]
+			if tool_name:find("dye:")
+			and not self.collected
+			and self.growth_scale > 0.9 then
+				local dye = tool_name:split(":")[2]
 				if color[1] == dye then
 
-					self.dye_color = mobkit.remember(self, "dye_color", color[1])
-					self.dye_hex = mobkit.remember(self, "dye_hex", color[3])
+					self.dye_color = self:memorize("dye_color", color[1])
+					self.dye_hex = self:memorize("dye_hex", color[3])
 
 					self.drops = {
 						{name = "hades_animalia:mutton_raw", chance = 1, min = 1, max = 4},
@@ -249,38 +258,19 @@ animalia.register_mob("sheep", {
 					})
 
 					if not creative then
-						item:take_item()
-						clicker:set_wielded_item(item)
+						tool:take_item()
+						clicker:set_wielded_item(tool)
 					end
 					break
 				end
 			end
 		end
+		animalia.add_libri_page(self, clicker, {name = "sheep", form = "pg_sheep;Sheep"})
 	end,
-	on_punch = function(self, puncher, _, tool_capabilities, dir)
-		mob_core.on_punch_basic(self, puncher, tool_capabilities, dir)
-		animalia.hq_sporadic_flee(self, 10)
+	on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, direction, damage)
+		creatura.basic_punch_func(self, puncher, time_from_last_punch, tool_capabilities, direction, damage)
+		self._target = puncher
 	end
 })
 
-mob_core.register_spawn_egg("hades_animalia:sheep", "f4e6cf", "e1ca9b")
-
-minetest.register_craftitem("hades_animalia:mutton_raw", {
-	description = "Raw Mutton",
-	inventory_image = "animalia_mutton_raw.png",
-	on_use = minetest.item_eat(1),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craftitem("hades_animalia:mutton_cooked", {
-	description = "Cooked Mutton",
-	inventory_image = "animalia_mutton_cooked.png",
-	on_use = minetest.item_eat(6),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craft({
-	type  =  "cooking",
-	recipe  = "hades_animalia:mutton_raw",
-	output = "hades_animalia:mutton_cooked",
-})
+creatura.register_spawn_egg("hades_animalia:sheep", "f4e6cf", "e1ca9b")

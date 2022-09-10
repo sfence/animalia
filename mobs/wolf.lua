@@ -2,9 +2,20 @@
 -- Wolf --
 ----------
 
-local clamp_bone_rot = animalia.clamp_bone_rot
-
-local interp = animalia.interp
+local function shared_owner(obj1, obj2)
+	if not obj1 or not obj2 then return false end
+	obj1 = creatura.is_valid(obj1)
+	obj2 = creatura.is_valid(obj2)
+	if obj1
+	and obj2
+	and obj1:get_luaentity()
+	and obj2:get_luaentity() then
+		obj1 = obj1:get_luaentity()
+		obj2 = obj2:get_luaentity()
+		return obj1.owner and obj2.owner and obj1.owner == obj2.owner
+	end
+	return false
+end
 
 local follow = {
 	"hades_animalia:mutton_raw",
@@ -23,203 +34,220 @@ if minetest.registered_items["bonemeal:bone"] then
 	}
 end
 
-function animalia.bh_attack(self, prty, target)
-	if mobkit.is_alive(target) then
-		if target:is_player() then
-			if not self.tamed
-			or target:get_player_name() ~= self.owner then
-				animalia.hq_attack(self, prty, target)
-			end
-		elseif target:get_luaentity() then
-			if not self.tamed
-			or not mob_core.shared_owner(self, target) then
-				animalia.hq_attack(self, prty, target)
-			end
-		end
-	end
+local function is_value_in_table(tbl, val)
+    for _, v in pairs(tbl) do
+        if v == val then
+            return true
+        end
+    end
+    return false
 end
 
-local function wolf_logic(self)
-	
-	if self.hp <= 0 then	
-		mob_core.on_die(self)
-		return
-	end
-
-	animalia.head_tracking(self, 0.5, 0.75)
-
-	if mobkit.timer(self, 1) then
-
-		local prty = mobkit.get_queue_priority(self)
-		local player = mobkit.get_nearby_player(self)
-
-		mob_core.random_sound(self, 22)
-		mob_core.growth(self)
-
-		if self.status ~= "following" then
-            if self.attention_span > 1 then
-                self.attention_span = self.attention_span - 1
-                mobkit.remember(self, "attention_span", self.attention_span)
-            end
-		else
-			self.attention_span = self.attention_span + 1
-			mobkit.remember(self, "attention_span", self.attention_span)
-		end
-
-		if prty < 22
-		and self.order == "sit" then
-			if not mobkit.is_queue_empty_high(self) then
-				mobkit.clear_queue_high(self)
-			end
-			mobkit.animate(self, "sit")
-			return
-		end
-
-		if prty < 21
-		and self.owner_target then
-			if not mob_core.shared_owner(self, self.owner_target) then
-            	animalia.hq_attack(self, 21, self.owner_target)
-			end
-        end
-
-		if prty < 20
-		and self.order == "follow"
-		and self.owner
-		and minetest.get_player_by_name(self.owner) then
-			local owner = minetest.get_player_by_name(self.owner)
-			animalia.hq_follow_player(self, 20, owner, true)
-		end
-
-		if prty < 5
-		and self.isinliquid then
-			animalia.hq_go_to_land(self, 5)
-		end
-
-		if prty < 4
-        and self.breeding then
-            animalia.hq_breed(self, 4)
-		end
-
-		if prty == 3
-		and not self.lasso_player
-		and (not player
-		or not mob_core.follow_holding(self, player)) then
-			mobkit.clear_queue_high(self)
-		end
-
-        if prty < 3 then
-			if self.caught_with_lasso
-			and self.lasso_player then
-				animalia.hq_follow_player(self, 3, self.lasso_player, true)
-			elseif player then
-	        	if self.attention_span < 5 then
-				    if mob_core.follow_holding(self, player) then
-            	        animalia.hq_follow_player(self, 3, player)
-            	        self.attention_span = self.attention_span + 3
-            	    end
-            	end
-			end
-        end
-		
-		if prty < 2 then
-			local target = mobkit.get_closest_entity(self, "hades_animalia:sheep")
-			if target then
-				animalia.bh_attack(self, 2, target)
-			end
-		end
-
-		if mobkit.is_queue_empty_high(self) then
-			animalia.hq_wander_group(self, 0, 8)
-		end
-	end
-end
-
-animalia.register_mob("wolf", {
+creatura.register_mob("hades_animalia:wolf", {
     -- Stats
-    health = 25,
-    fleshy = 100,
-    view_range = 32,
-    lung_capacity = 10,
-    -- Visual
-	collisionbox = {-0.35, -0.375, -0.35, 0.35, 0.4, 0.35},
-	visual_size = {x = 9, y = 9},
-	scale_stage1 = 0.5,
-    scale_stage2 = 0.65,
-    scale_stage3 = 0.80,
-	mesh = "animalia_wolf.b3d",
-	textures = {"animalia_wolf.png"},
+    max_health = 15,
+    armor_groups = {fleshy = 100},
+    damage = 4,
+    speed = 5,
+	tracking_range = 24,
+    despawn_after = 2000,
+	-- Entity Physics
+	stepheight = 1.1,
+	max_fall = 3,
+    -- Visuals
+    mesh = "animalia_wolf.b3d",
+	hitbox = {
+		width = 0.35,
+		height = 0.7
+	},
+    visual_size = {x = 9, y = 9},
+	textures = {
+		"animalia_wolf_1.png",
+		"animalia_wolf_2.png",
+		"animalia_wolf_3.png",
+		"animalia_wolf_4.png"
+	},
 	animations = {
-		stand = {range = {x = 30, y = 49}, speed = 10, frame_blend = 0.3, loop = true},
-		sit = {range = {x = 60, y = 90}, speed = 20, frame_blend = 0.3, loop = true},
-		walk = {range = {x = 1, y = 20}, speed = 30, frame_blend = 0.3, loop = true},
-		run = {range = {x = 1, y = 20}, speed = 45, frame_blend = 0.3, loop = true},
+		stand = {range = {x = 1, y = 39}, speed = 10, frame_blend = 0.3, loop = true},
+		walk = {range = {x = 41, y = 59}, speed = 30, frame_blend = 0.3, loop = true},
+		run = {range = {x = 41, y = 59}, speed = 45, frame_blend = 0.3, loop = true},
+		sit = {range = {x = 61, y = 79}, speed = 20, frame_blend = 0.3, loop = true},
 	},
-    -- Physics
-    speed = 8,
-    max_fall = 4,
-    -- Attributes
-    sounds = {
-        alter_child_pitch = true,
-        random = {
-            name = "animalia_wolf_idle",
-            gain = 1.0,
-            distance = 8
-        },
-        hurt = {
-            name = "animalia_wolf_hurt",
-			gain = 1.0,
-			pitch = 0.5,
-            distance = 8
-        },
-        death = {
-            name = "animalia_wolf_death",
-            gain = 1.0,
-            distance = 8
-        }
-	},
-	reach = 2,
-    damage = 3,
-    knockback = 2,
-    punch_cooldown = 1,
-    -- Behavior
-    defend_owner = true,
-	follow = {
-		"bonemeal:bone",
-		"hades_animalia:beef_raw",
-		"hades_animalia:porkchop_raw",
-		"hades_animalia:mutton_raw",
-		"hades_animalia:poultry_raw"
-	},
-    -- Functions
+    -- Misc
+	step_delay = 0.25,
+	catch_with_net = true,
+	catch_with_lasso = true,
+	assist_owner = true,
+    follow = follow,
 	head_data = {
-		offset = {x = 0, y = 0.22, z = 0},
-		pitch_correction = -20,
+		offset = {x = 0, y = 0.33, z = 0},
+		pitch_correction = -67,
 		pivot_h = 0.65,
 		pivot_v = 0.65
 	},
-    logic = wolf_logic,
-    get_staticdata = mobkit.statfunc,
-	on_step = animalia.on_step,
-	on_activate = animalia.on_activate,
-	on_rightclick = function(self, clicker)
-		if animalia.feed_tame(self, clicker, math.random(3, 5), true, true) then return end
-		mob_core.protect(self, clicker, false)
-		mob_core.nametag(self, clicker, true)
-		if not self.owner
-		or clicker:get_player_name() ~= self.owner then return end
-		if self.order == "wander" then
-			self.order = "follow"
-		elseif self.order == "follow" then
-			self.order = "sit"
-		else
-			self.order = "wander"
+    -- Function
+	utility_stack = {
+		{
+			utility = "hades_animalia:wander_skittish",
+			step_delay = 0.25,
+			get_score = function(self)
+				return 0.1, {self}
+			end
+		},
+		{
+			utility = "hades_animalia:swim_to_land",
+			step_delay = 0.25,
+			get_score = function(self)
+				if self.in_liquid then
+					return 0.3, {self}
+				end
+				return 0
+			end
+		},
+		{
+			utility = "hades_animalia:attack_target",
+			get_score = function(self)
+				local order = self.order or "wander"
+				if order ~= "wander" then return 0 end
+				local target = self._target or creatura.get_nearby_object(self, "hades_animalia:sheep")
+				if target
+				and not shared_owner(self, target) then
+					return 0.4, {self, target}
+				end
+				return 0
+			end
+		},
+		{
+			utility = "hades_animalia:stay",
+			step_delay = 0.25,
+			get_score = function(self)
+				local order = self.order or "wander"
+				if order == "sit" then
+					return 0.5, {self}
+				end
+				return 0
+			end
+		},
+		{
+			utility = "hades_animalia:follow_player",
+			get_score = function(self)
+				local lasso = type(self.lasso_origin or {}) == "userdata" and self.lasso_origin
+				local owner = self.owner and self.order == "follow" and minetest.get_player_by_name(self.owner)
+				local force = (lasso and lasso ~= false) or owner
+				local player = (force and (owner or lasso)) or creatura.get_nearby_player(self)
+				if player
+				and (self:follow_wielded_item(player)
+				or force) then
+					return 0.6, {self, player, force}
+				end
+				return 0
+			end
+		},
+		{
+			utility = "hades_animalia:breed",
+			step_delay = 0.25,
+			get_score = function(self)
+				if self.breeding
+				and animalia.get_nearby_mate(self, self.name) then
+					return 0.7, {self}
+				end
+				return 0
+			end
+		}
+	},
+    activate_func = function(self)
+		animalia.initialize_api(self)
+		animalia.initialize_lasso(self)
+		self.order = self:recall("order") or "wander"
+		self.owner = self:recall("owner") or nil
+		self.enemies = self:recall("enemies") or {}
+		if self.owner
+		and minetest.get_player_by_name(self.owner) then
+			if not is_value_in_table(animalia.pets[self.owner], self.object) then
+				table.insert(animalia.pets[self.owner], self.object)
+			end
 		end
-		mobkit.remember(self, "order", self.order)
+    end,
+    step_func = function(self)
+		animalia.step_timers(self)
+		animalia.head_tracking(self, 0.5, 0.75)
+		animalia.do_growth(self, 60)
+		animalia.update_lasso_effects(self)
+    end,
+    death_func = function(self)
+		if self:get_utility() ~= "hades_animalia:die" then
+			self:initiate_utility("hades_animalia:die", self)
+		end
+    end,
+	on_rightclick = function(self, clicker)
+		if not clicker:is_player() then return end
+		local name = clicker:get_player_name()
+		local passive = true
+		if is_value_in_table(self.enemies, name) then passive = false end
+		if animalia.feed(self, clicker, passive, passive) then
+			return
+		end
+		if animalia.set_nametag(self, clicker) then
+			return
+		end
+		if self.owner
+		and name == self.owner
+		and clicker:get_player_control().sneak then
+			local order = self.order
+			if order == "wander" then
+				minetest.chat_send_player(name, "Wolf is following")
+				self.order = "follow"
+				self:initiate_utility("hades_animalia:follow_player", self, clicker, true)
+				self:set_utility_score(0.7)
+			elseif order == "follow" then
+				minetest.chat_send_player(name, "Wolf is sitting")
+				self.order = "sit"
+				self:initiate_utility("hades_animalia:stay", self)
+				self:set_utility_score(0.5)
+			else
+				minetest.chat_send_player(name, "Wolf is wandering")
+				self.order = "wander"
+				self:set_utility_score(0)
+			end
+			self:memorize("order", self.order)
+		end
+		animalia.add_libri_page(self, clicker, {name = "wolf", form = "pg_wolf;Wolves"})
 	end,
-	on_punch = function(self, puncher, _, tool_capabilities, dir)
-		mob_core.on_punch_basic(self, puncher, tool_capabilities, dir)
-		animalia.bh_attack(self, 10, puncher)
+	on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, direction, damage)
+		creatura.basic_punch_func(self, puncher, time_from_last_punch, tool_capabilities, direction, damage)
+		local name = puncher:is_player() and puncher:get_player_name()
+		if name then
+			if self.owner
+			and name == self.owner then
+				return
+			elseif not is_value_in_table(self.enemies, name) then
+				table.insert(self.enemies, name)
+				if #self.enemies > 15 then
+					table.remove(self.enemies, 1)
+				end
+				self.enemies = self:memorize("enemies", self.enemies)
+			else
+				table.remove(self.enemies, 1)
+				table.insert(self.enemies, name)
+				self.enemies = self:memorize("enemies", self.enemies)
+			end
+		end
+		self._target = puncher
+	end,
+	deactivate_func = function(self)
+		if self.owner then
+			for i = 1, #animalia.pets[self.owner] do
+				if animalia.pets[self.owner][i] == self.object then
+					animalia.pets[self.owner][i] = nil
+				end
+			end
+		end
+		if self.enemies
+		and self.enemies[1] then
+			self.enemies[1] = nil
+			self.enemies = self:memorize("enemies", self.enemies)
+		end
 	end
 })
 
-mob_core.register_spawn_egg("hades_animalia:wolf", "a19678" ,"231b13")
+creatura.register_spawn_egg("hades_animalia:wolf", "a19678" ,"231b13")
